@@ -1,0 +1,7 @@
+{
+  "name": "etfile",
+  "version": "0.0.1",
+  "dependencies": {
+    "cote": "^0.14.1"
+  }
+}
