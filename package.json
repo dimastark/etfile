@@ -2,6 +2,7 @@
   "name": "etfile",
   "version": "0.0.1",
   "dependencies": {
+    "chokidar": "^1.7.0",
     "cote": "^0.14.1"
   }
 }
