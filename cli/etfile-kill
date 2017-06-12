@@ -3,6 +3,7 @@
 
 const cote = require('cote');
 const async = require('async');
+const utils = require('../utils');
 const program = require('commander');
 
 program.parse(process.argv);
@@ -12,11 +13,12 @@ if (program.args.length === 0) {
 }
 
 const requester = new cote.Requester(
-    { name: 'List requester' },
+    { name: 'Kill requester' },
     { log: false }
 );
 
-// TODO: Если не существует?
+utils.exitIfArbitratorNotStarted();
+
 async.each(program.args, (name, cb) => {
     requester.send({ type: 'kill please', name }, res => {
         console.info(`Trying to kill: ${name}, result: ${res}`);

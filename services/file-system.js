@@ -3,11 +3,9 @@
 const chokidar = require('chokidar');
 const Service = require('../service/service');
 
+const fsService = new Service('file system events proxy');
 const path = process.argv[2];
 const repo = process.argv[3];
-console.log(`Path: ${path} Repo: ${repo}`);
-
-const fsService = new Service('file system events proxy');
 
 fsService.requester.send({ type: 'give me name', path, repo }, res => {
     const name = res.name;

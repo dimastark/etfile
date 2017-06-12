@@ -11,6 +11,7 @@
     "commander": "^2.9.0",
     "cote": "^0.14.1",
     "faker": "^4.1.0",
-    "forever": "^0.15.3"
+    "forever": "^0.15.3",
+    "prompt": "latest"
   }
 }

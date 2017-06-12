@@ -1,9 +1,14 @@
 'use strict';
 
+const cote = require('cote');
 const faker = require('faker');
 const Service = require('../service/service');
 
 const arbitrationService = new Service('arbitrator');
+arbitrationService._responder = new cote.Responder(
+    {name: 'arbitrator responder'},
+    {port: 8000}
+);
 const fsServices = {};
 
 arbitrationService.responder.on('give me name', (req, cb) => {
@@ -21,9 +26,13 @@ arbitrationService.requester.on('tell me', (req, cb) => {
 });
 
 arbitrationService.responder.on('kill please', (req, cb) => {
-    delete fsServices[req.name];
-    arbitrationService.publisher.publish(req.name, { method: 'die' });
-    cb('ok');
+    if (fsServices.hasOwnProperty(req.name)) {
+        delete fsServices[req.name];
+        arbitrationService.publisher.publish(req.name, {method: 'die'});
+        cb('ok');
+    } else {
+        cb('not started')
+    }
 });
 
 function nextName() {

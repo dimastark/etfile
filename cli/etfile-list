@@ -2,6 +2,7 @@
 'use strict';
 
 const cote = require('cote');
+const utils = require('../utils');
 const blue = require('chalk')['blue'];
 const table = new require('cli-table')();
 
@@ -9,6 +10,8 @@ const requester = new cote.Requester(
     { name: 'List requester' },
     { log: false }
 );
+
+utils.exitIfArbitratorNotStarted();
 
 requester.send({ type: 'tell me all' }, objects => {
     const empty = Object.keys(objects).length === 0;
