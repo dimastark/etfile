@@ -1,0 +1,32 @@
+#!/usr/bin/env node
+'use strict';
+
+const path = require('path');
+const program = require('commander');
+const exec = require('child_process').exec;
+
+const servicesDir = path.join(__dirname, '../services/');
+
+program.option('-r, --remote <remote>', 'remote repository for store files')
+    .parse(process.argv);
+
+const paths = program.args;
+
+if (paths.length !== 1) {
+    return console.error('Only one path is possible');
+}
+
+if (!program.remote) {
+    return console.error('Please provide remote repository');
+}
+
+const watchPath = path.isAbsolute(paths[0])
+    ? paths[0] : path.join(process.cwd(), paths[0]);
+const repository = program.remote;
+
+console.info(`Running daemon in directory: ${watchPath}`);
+console.info(`Mapped to remote: ${repository}`);
+
+// TODO: арбитраж должен быть запущен и только один
+const fsServicePath = path.join(servicesDir, 'file-system.js');
+exec(`forever start ${fsServicePath} ${watchPath} ${repository} -m 1`).unref();

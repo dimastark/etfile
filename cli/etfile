@@ -1,0 +1,13 @@
+#!/usr/bin/env node
+'use strict';
+
+const program = require('commander');
+
+program.version('0.0.1', '-v, --version')
+    .command('run [directory]', 'run watcher daemon in directory')
+    .command('kill [name]', 'kill watcher daemon without mercy')
+    .command('sync [name]', 'sync with latest version of files')
+    .command('settings-wizard', 'quick setup with prompts')
+    .command('settings [options]', 'settings of daemons')
+    .command('list', 'show all running daemons')
+    .parse(process.argv);

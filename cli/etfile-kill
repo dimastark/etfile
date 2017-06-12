@@ -1,0 +1,25 @@
+#!/usr/bin/env node
+'use strict';
+
+const cote = require('cote');
+const async = require('async');
+const program = require('commander');
+
+program.parse(process.argv);
+
+if (program.args.length === 0) {
+    return console.error('No names to kill');
+}
+
+const requester = new cote.Requester(
+    { name: 'List requester' },
+    { log: false }
+);
+
+// TODO: Если не существует?
+async.each(program.args, (name, cb) => {
+    requester.send({ type: 'kill please', name }, res => {
+        console.info(`Trying to kill: ${name}, result: ${res}`);
+        cb();
+    });
+}, () => process.exit());
