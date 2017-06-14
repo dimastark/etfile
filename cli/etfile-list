@@ -2,9 +2,10 @@
 'use strict';
 
 const cote = require('cote');
-const utils = require('../utils');
 const blue = require('chalk')['blue'];
 const table = new require('cli-table')();
+
+const utils = require('../utils');
 
 const requester = new cote.Requester(
     { name: 'List requester' },

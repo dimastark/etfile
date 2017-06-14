@@ -1,13 +1,18 @@
 #!/usr/bin/env node
 'use strict';
 
+const fs = require('fs');
 const path = require('path');
 const async = require('async');
-const utils = require('../utils');
 const program = require('commander');
 const exec = require('child_process').execSync;
 
+const statAsync = require('util').promisify(fs.stat);
+
+const utils = require('../utils');
+
 const servicesDir = path.join(__dirname, '../services/');
+const settingsFile = path.join(servicesDir, 'settings.json');
 
 program.option('-r, --remote <remote>', 'remote repository for store files', null, null)
     .parse(process.argv);
@@ -25,6 +30,14 @@ const watchPath = path.isAbsolute(paths[0])
 const repository = program['remote'];
 
 async.waterfall([
+    cb => {
+        statAsync(settingsFile).then(() => cb())
+            .catch(() => {
+                console.error('File with settings not exists');
+                console.info('Please run setup wizard');
+                process.exit(1);
+            });
+    },
     cb => utils.ifArbitratorNotStarted(() => {
         console.info('Arbitrator not started');
         console.info('Running arbitrator...');

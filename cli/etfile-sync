@@ -1,4 +1,28 @@
 #!/usr/bin/env node
 'use strict';
 
-// TODO: just call sync in arbitration service
+const cote = require('cote');
+const async = require('async');
+const program = require('commander');
+
+const utils = require('../utils');
+
+program.parse(process.argv);
+
+if (program.args.length === 0) {
+    return console.error('No names to sync');
+}
+
+const requester = new cote.Requester(
+    { name: 'Sync requester' },
+    { log: false }
+);
+
+utils.exitIfArbitratorNotStarted();
+
+async.each(program.args, (name, cb) => {
+    requester.send({ type: 'sync please', name }, res => {
+        console.info(`Synchronize: ${name}, result: ${res}`);
+        cb();
+    });
+}, () => process.exit());

@@ -3,8 +3,9 @@
 
 const cote = require('cote');
 const async = require('async');
-const utils = require('../utils');
 const program = require('commander');
+
+const utils = require('../utils');
 
 program.parse(process.argv);
 

@@ -7,6 +7,6 @@ program.version('0.0.1', '-v, --version')
     .command('run [directory]', 'run watcher daemon in directory')
     .command('kill [name]', 'kill watcher daemon without mercy')
     .command('sync [name]', 'sync with latest version of files')
-    .command('settings-wizard', 'quick setup with prompts')
+    .command('setup-wizard', 'quick setup with prompts')
     .command('list', 'show all running daemons')
     .parse(process.argv);

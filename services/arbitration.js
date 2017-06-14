@@ -35,6 +35,8 @@ arbitrationService.responder.on('kill please', (req, cb) => {
     }
 });
 
+// TODO: sync please
+
 function nextName() {
     let name = faker.name.firstName(null);
     while (fsServices[name]) {
