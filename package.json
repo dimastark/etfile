@@ -12,6 +12,7 @@
     "cote": "^0.14.1",
     "faker": "^4.1.0",
     "forever": "^0.15.3",
-    "prompt": "latest"
+    "prompt": "latest",
+    "simple-git": "^1.73.0"
   }
 }

@@ -1,6 +1,8 @@
 'use strict';
 
+const git = require('simple-git');
 const chokidar = require('chokidar');
+
 const Service = require('../service');
 
 const fsService = new Service('file system events proxy');
@@ -25,7 +27,7 @@ fsService.requester.send({ type: 'give me name', path, repo }, req => {
             process.exit(0);
         }
         if (req.method === 'syn') {
-            console.log('syn');
+            git(path).pull();
         }
     });
 });

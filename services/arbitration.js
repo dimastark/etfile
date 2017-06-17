@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const faker = require('faker');
+
 const Service = require('../service');
 
 const arbitrationService = new Service('arbitrator');
