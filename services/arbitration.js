@@ -1,9 +1,12 @@
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
 const faker = require('faker');
 const Service = require('../service');
 
 const arbitrationService = new Service('arbitrator');
+const settings = readSettings();
 const fsServices = {};
 
 arbitrationService.responder.on('give me name', (req, cb) => {
@@ -46,4 +49,14 @@ function nextName() {
     }
 
     return name;
+}
+
+function readSettings() {
+    const settingsPath = path.join(__dirname, 'settings.json');
+    try {
+        return JSON.parse(fs.readFileSync(settingsPath));
+    } catch (err) {
+        console.error('Settings file not exists');
+        process.exit(1);
+    }
 }
