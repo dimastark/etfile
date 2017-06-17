@@ -1,7 +1,7 @@
 'use strict';
 
 const faker = require('faker');
-const Service = require('../service/service');
+const Service = require('../service');
 
 const arbitrationService = new Service('arbitrator');
 const fsServices = {};

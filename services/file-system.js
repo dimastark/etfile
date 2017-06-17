@@ -1,7 +1,7 @@
 'use strict';
 
 const chokidar = require('chokidar');
-const Service = require('../service/service');
+const Service = require('../service/index');
 
 const fsService = new Service('file system events proxy');
 const path = process.argv[2];
