@@ -7,7 +7,7 @@ const async = require('async');
 const cp = require('child_process');
 const program = require('commander');
 
-const utils = require('../utils/checks');
+const checks = require('../utils/checks');
 
 const servicesDir = path.join(__dirname, '../services/');
 const settingsFile = path.join(servicesDir, 'settings.json');
@@ -16,12 +16,15 @@ program.option('-r, --remote <remote>', 'remote repository for store files')
     .parse(process.argv);
 
 const paths = program.args;
+
 if (paths.length !== 1) {
     return console.error('Only one path is possible');
 }
+
 if (!program['remote']) {
     return console.error('Please provide remote repository');
 }
+
 
 const repository = program['remote'];
 const watchPath = path.isAbsolute(paths[0])
@@ -30,14 +33,19 @@ const watchPath = path.isAbsolute(paths[0])
 
 async.series([
     fs.stat.bind(null, settingsFile),
-    cb => utils.ifArbitratorNotStarted(() => {
+    cb => checks.ifArbitratorNotStarted(() => {
         console.info('Arbitrator not started');
         console.info('Please run setup-wizard');
         process.exit(1);
     }, cb),
-    cb => utils.ifGitClientNotStarted(() => {
+    cb => checks.ifGitClientNotStarted(() => {
         console.info('Git-client not started');
         console.info('Please run setup-wizard');
+        process.exit(1);
+    }, cb),
+    fs.stat.bind(null, watchPath),
+    cb => checks.ifRepositoryNotExists(repository, () => {
+        console.info('Bad repository url (not exists)');
         process.exit(1);
     }, cb),
     cb => {
@@ -52,9 +60,11 @@ async.series([
     if (!error) {
         process.exit();
     }
-    if (error.code === 'ENOENT') {
+    if (error.code === 'ENOENT' && error.path === settingsFile) {
         console.error('File with settings not exists');
         console.error('Please run setup wizard');
+    } else if (error.code === 'ENOENT' && error.path === watchPath) {
+        console.error('Bad directory path (not exists)')
     } else {
         console.error('Something goes wrong');
     }

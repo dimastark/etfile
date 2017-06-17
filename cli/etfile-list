@@ -5,9 +5,9 @@ const cote = require('cote');
 const chalk = require('chalk');
 const Table = require('cli-table');
 
-const utils = require('../utils/checks');
+const checks = require('../utils/checks');
 
-utils.exitIfArbitratorNotStarted();
+checks.exitIfArbitratorNotStarted();
 
 const requester = new cote.Requester(
     { name: 'List requester' },

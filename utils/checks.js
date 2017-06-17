@@ -1,6 +1,7 @@
 'use strict';
 
 const net = require("net");
+const git = require('./git');
 
 function portInUse(port, cb) {
     const client = new net.Socket();
@@ -55,10 +56,22 @@ function exitIfArbitratorNotStarted(endCb) {
     }, endCb);
 }
 
+function ifRepositoryNotExists(repo, cb, endCb) {
+    git.repositoryExists(repo, exists => {
+        if (!exists) {
+            cb();
+        }
+        if (endCb && exists) {
+            endCb();
+        }
+    });
+}
+
 module.exports = {
     exitIfArbitratorNotStarted,
     ifArbitratorNotStarted,
     ifGitClientNotStarted,
+    ifRepositoryNotExists,
     ifArbitratorStarted,
     ifGitClientStarted,
     ifPortNotInUse,

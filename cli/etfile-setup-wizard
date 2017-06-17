@@ -7,7 +7,7 @@ const async = require('async');
 const prompt = require('prompt');
 const cp = require('child_process');
 
-const utils = require('../utils/checks');
+const checks = require('../utils/checks');
 
 const servicesDir = path.join(__dirname, '../services/');
 const settingsPath = path.join(servicesDir, 'settings.json');
@@ -51,7 +51,7 @@ prompt.get([{
     console.info('Settings applied');
 
     async.series([
-        cb => utils.ifGitClientStarted(() => {
+        cb => checks.ifGitClientStarted(() => {
             console.log('Restarting git-client...');
             cp.execSync(`forever -m 1 restart ${gitClientPath}`);
             cb();
@@ -61,7 +61,7 @@ prompt.get([{
             cb();
         }),
 
-        cb => utils.ifArbitratorStarted(() => {
+        cb => checks.ifArbitratorStarted(() => {
             console.log('Restarting arbitrator...');
             cp.execSync(`forever -m 1 restart ${arbitrationPath}`);
             cb();

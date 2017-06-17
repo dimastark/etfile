@@ -5,7 +5,7 @@ const cote = require('cote');
 const async = require('async');
 const program = require('commander');
 
-const utils = require('../utils/checks');
+const checks = require('../utils/checks');
 
 program.parse(process.argv);
 
@@ -13,7 +13,7 @@ if (program.args.length === 0) {
     return console.error('No names to sync');
 }
 
-utils.exitIfArbitratorNotStarted();
+checks.exitIfArbitratorNotStarted();
 
 const requester = new cote.Requester(
     { name: 'Sync requester' },
