@@ -42,7 +42,8 @@ arbitrationService.responder.on('sync please', (req, cb) => {
     }
 });
 
-arbitrationService.subscriber.on('fs event', req => {
+arbitrationService.responder.on('fs event', (req, cb) => {
+    cb('ok');
     console.log(req);
 });
 
