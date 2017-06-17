@@ -3,14 +3,10 @@
 const net = require("net");
 
 function portInUse(port, cb) {
-    const server = net.createServer();
-    server.listen(port, '127.0.0.1');
-
-    server.on('error', () => cb(null, true));
-    server.on('listening', () => {
-        server.close();
-        cb(null, false);
-    });
+    const client = new net.Socket();
+    client.once('connect', () => cb(true));
+    client.once('error', () => cb(false));
+    client.connect({port});
 }
 
 function ifPortInUse(port, cb, endCb) {

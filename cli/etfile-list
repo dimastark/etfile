@@ -2,27 +2,35 @@
 'use strict';
 
 const cote = require('cote');
-const blue = require('chalk')['blue'];
-const table = new require('cli-table')();
+const chalk = require('chalk');
+const Table = require('cli-table');
 
 const utils = require('../utils');
+
+utils.exitIfArbitratorNotStarted();
 
 const requester = new cote.Requester(
     { name: 'List requester' },
     { log: false }
 );
 
-utils.exitIfArbitratorNotStarted();
-
 requester.send({ type: 'tell me all' }, objects => {
-    const empty = Object.keys(objects).length === 0;
+    const keys = Object.keys(objects);
 
-    table.push(['Name', 'Path', 'Repository'].map(blue));
-    for (let name in Object.keys(objects)) {
+    if (keys.length === 0) {
+        console.info('No daemons running');
+        process.exit();
+    }
+
+    const blue = s => chalk.blue(s);
+    const head = ['Name', 'Path', 'Repository'].map(blue);
+    const table = new Table({ head });
+
+    for (let name of keys) {
         const obj = objects[name];
         table.push([name, obj.path, obj.repo]);
     }
 
-    console.log(empty ? 'No daemons running' : table.toString());
+    console.log(table.toString());
     process.exit();
 });

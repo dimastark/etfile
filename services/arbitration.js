@@ -1,18 +1,14 @@
 'use strict';
 
-const cote = require('cote');
 const faker = require('faker');
 const Service = require('../service/service');
 
 const arbitrationService = new Service('arbitrator');
-arbitrationService._responder = new cote.Responder(
-    {name: 'arbitrator responder'},
-    {port: 8000}
-);
 const fsServices = {};
 
 arbitrationService.responder.on('give me name', (req, cb) => {
     const name = nextName();
+    console.log('giving name', name);
     fsServices[name] = { path: req.path, repo: req.repo, params: {} };
     cb(name);
 });
