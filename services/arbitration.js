@@ -8,9 +8,8 @@ const fsServices = {};
 
 arbitrationService.responder.on('give me name', (req, cb) => {
     const name = nextName();
-    console.log('giving name', name);
     fsServices[name] = { path: req.path, repo: req.repo, params: {} };
-    cb(name);
+    cb({ name });
 });
 
 arbitrationService.responder.on('tell me all', (req, cb) => {
@@ -31,7 +30,14 @@ arbitrationService.responder.on('kill please', (req, cb) => {
     }
 });
 
-// TODO: sync please
+arbitrationService.responder.on('sync please', (req, cb) => {
+    if (fsServices.hasOwnProperty(req.name)) {
+        arbitrationService.publisher.publish(req.name, {method: 'syn'});
+        cb('ok');
+    } else {
+        cb('not started')
+    }
+});
 
 function nextName() {
     let name = faker.name.firstName(null);

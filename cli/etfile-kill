@@ -13,12 +13,12 @@ if (program.args.length === 0) {
     return console.error('No names to kill');
 }
 
+utils.exitIfArbitratorNotStarted();
+
 const requester = new cote.Requester(
     { name: 'Kill requester' },
     { log: false }
 );
-
-utils.exitIfArbitratorNotStarted();
 
 async.each(program.args, (name, cb) => {
     requester.send({ type: 'kill please', name }, res => {
