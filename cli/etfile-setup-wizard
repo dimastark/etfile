@@ -7,7 +7,7 @@ const async = require('async');
 const prompt = require('prompt');
 const cp = require('child_process');
 
-const utils = require('../utils');
+const utils = require('../utils/checks');
 
 const servicesDir = path.join(__dirname, '../services/');
 const settingsPath = path.join(servicesDir, 'settings.json');
