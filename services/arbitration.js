@@ -42,6 +42,10 @@ arbitrationService.responder.on('sync please', (req, cb) => {
     }
 });
 
+arbitrationService.subscriber.on('fs event', req => {
+    console.log(req);
+});
+
 function nextName() {
     let name = faker.name.firstName(null);
     while (fsServices[name]) {

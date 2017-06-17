@@ -51,16 +51,6 @@ prompt.get([{
     console.info('Settings applied');
 
     async.series([
-        cb => utils.ifArbitratorStarted(() => {
-            console.log('Restarting arbitrator...');
-            cp.execSync(`forever -m 1 restart ${arbitrationPath}`);
-            cb();
-        }, () => {
-            console.log('Running arbitrator...');
-            cp.execSync(`forever -m 1 start ${arbitrationPath}`);
-            cb();
-        }),
-
         cb => utils.ifGitClientStarted(() => {
             console.log('Restarting git-client...');
             cp.execSync(`forever -m 1 restart ${gitClientPath}`);
@@ -68,6 +58,16 @@ prompt.get([{
         }, () => {
             console.log('Running git-client...');
             cp.execSync(`forever -m 1 start ${gitClientPath}`);
+            cb();
+        }),
+
+        cb => utils.ifArbitratorStarted(() => {
+            console.log('Restarting arbitrator...');
+            cp.execSync(`forever -m 1 restart ${arbitrationPath}`);
+            cb();
+        }, () => {
+            console.log('Running arbitrator...');
+            cp.execSync(`forever -m 1 start ${arbitrationPath}`);
             cb();
         })
     ]);
