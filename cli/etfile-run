@@ -4,17 +4,15 @@
 const fs = require('fs');
 const path = require('path');
 const async = require('async');
+const cp = require('child_process');
 const program = require('commander');
-const exec = require('child_process').execSync;
-
-const statAsync = require('util').promisify(fs.stat);
 
 const utils = require('../utils');
 
 const servicesDir = path.join(__dirname, '../services/');
 const settingsFile = path.join(servicesDir, 'settings.json');
 
-program.option('-r, --remote <remote>', 'remote repository for store files', null, null)
+program.option('-r, --remote <remote>', 'remote repository for store files')
     .parse(process.argv);
 
 const paths = program.args;
@@ -25,29 +23,23 @@ if (!program['remote']) {
     return console.error('Please provide remote repository');
 }
 
-const watchPath = path.isAbsolute(paths[0])
-    ? paths[0] : path.join(process.cwd(), paths[0]);
 const repository = program['remote'];
+const watchPath = path.isAbsolute(paths[0])
+    ? paths[0]
+    : path.join(process.cwd(), paths[0]);
 
-async.waterfall([
-    cb => {
-        statAsync(settingsFile).then(() => cb())
-            .catch(() => {
-                console.error('File with settings not exists');
-                console.info('Please run setup wizard');
-                process.exit(1);
-            });
-    },
+async.series([
+    fs.stat.bind(null, settingsFile),
     cb => utils.ifArbitratorNotStarted(() => {
         console.info('Arbitrator not started');
         console.info('Running arbitrator...');
-        exec(`forever -m 1 start ${path.join(servicesDir, 'arbitration.js')}`);
+        cp.execSync(`forever -m 1 start ${path.join(servicesDir, 'arbitration.js')}`);
         cb();
     }, cb),
     cb => utils.ifGitClientNotStarted(() => {
         console.info('Git-client not started');
         console.info('Running git-client...');
-        exec(`forever -m 1 start ${path.join(servicesDir, 'git-client.js')}`);
+        cp.execSync(`forever -m 1 start ${path.join(servicesDir, 'git-client.js')}`);
         cb();
     }, cb),
     cb => {
@@ -55,7 +47,19 @@ async.waterfall([
         console.info(`Mapped to remote: ${repository}`);
 
         const fsServicePath = path.join(servicesDir, 'file-system.js');
-        exec(`forever -m 1 start ${fsServicePath} ${watchPath} ${repository}`);
+        cp.execSync(`forever -m 1 start ${fsServicePath} ${watchPath} ${repository}`);
         cb();
     }
-], () => process.exit());
+], error => {
+    if (!error) {
+        process.exit();
+    }
+    if (error.code === 'ENOENT') {
+        console.error('File with settings not exists');
+        console.error('Please run setup wizard');
+    } else {
+        console.error('Something goes wrong');
+    }
+
+    process.exit(1);
+});
