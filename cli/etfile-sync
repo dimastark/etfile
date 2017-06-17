@@ -13,12 +13,12 @@ if (program.args.length === 0) {
     return console.error('No names to sync');
 }
 
+utils.exitIfArbitratorNotStarted();
+
 const requester = new cote.Requester(
     { name: 'Sync requester' },
     { log: false }
 );
-
-utils.exitIfArbitratorNotStarted();
 
 async.each(program.args, (name, cb) => {
     requester.send({ type: 'sync please', name }, res => {
