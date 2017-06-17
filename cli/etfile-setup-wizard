@@ -3,6 +3,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const async = require('async');
 const prompt = require('prompt');
 const cp = require('child_process');
 
@@ -10,6 +11,7 @@ const utils = require('../utils');
 
 const servicesDir = path.join(__dirname, '../services/');
 const settingsPath = path.join(servicesDir, 'settings.json');
+const gitClientPath = path.join(servicesDir, 'git-client.js');
 const arbitrationPath = path.join(servicesDir, 'arbitration.js');
 
 prompt.message = "etfile";
@@ -47,11 +49,26 @@ prompt.get([{
 
     fs.writeFileSync(settingsPath, JSON.stringify(data));
     console.info('Settings applied');
-    utils.ifArbitratorStarted(() => {
-        console.log('Restarting arbitrator...');
-        cp.execSync(`forever -m 1 restart ${arbitrationPath}`);
-    }, () => {
-        console.log('Running arbitrator...');
-        cp.execSync(`forever -m 1 start ${arbitrationPath}`);
-    });
+
+    async.series([
+        cb => utils.ifArbitratorStarted(() => {
+            console.log('Restarting arbitrator...');
+            cp.execSync(`forever -m 1 restart ${arbitrationPath}`);
+            cb();
+        }, () => {
+            console.log('Running arbitrator...');
+            cp.execSync(`forever -m 1 start ${arbitrationPath}`);
+            cb();
+        }),
+
+        cb => utils.ifGitClientStarted(() => {
+            console.log('Restarting git-client...');
+            cp.execSync(`forever -m 1 restart ${gitClientPath}`);
+            cb();
+        }, () => {
+            console.log('Running git-client...');
+            cp.execSync(`forever -m 1 start ${gitClientPath}`);
+            cb();
+        })
+    ]);
 });

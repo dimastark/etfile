@@ -32,15 +32,13 @@ async.series([
     fs.stat.bind(null, settingsFile),
     cb => utils.ifArbitratorNotStarted(() => {
         console.info('Arbitrator not started');
-        console.info('Running arbitrator...');
-        cp.execSync(`forever -m 1 start ${path.join(servicesDir, 'arbitration.js')}`);
-        cb();
+        console.info('Please run setup-wizard');
+        process.exit(1);
     }, cb),
     cb => utils.ifGitClientNotStarted(() => {
         console.info('Git-client not started');
-        console.info('Running git-client...');
-        cp.execSync(`forever -m 1 start ${path.join(servicesDir, 'git-client.js')}`);
-        cb();
+        console.info('Please run setup-wizard');
+        process.exit(1);
     }, cb),
     cb => {
         console.info(`Running daemon in directory: ${watchPath}`);
