@@ -3,24 +3,19 @@
 
 const fs = require('fs');
 const path = require('path');
-const chalk = require('chalk');
 const prompt = require('prompt');
-const promisify = require('util').promisify;
-const exec = require('child_process').execSync;
+const cp = require('child_process');
 
-const getParamsAsync = promisify(prompt.get);
-const writeFileAsync = promisify(fs.writeFile);
-
-const ifArbitratorStarted = require('../utils').ifArbitratorStarted;
+const utils = require('../utils');
 
 const servicesDir = path.join(__dirname, '../services/');
 const settingsPath = path.join(servicesDir, 'settings.json');
 const arbitrationPath = path.join(servicesDir, 'arbitration.js');
 
-prompt.message = chalk['blue']("etfile");
+prompt.message = "etfile";
 prompt.start();
 
-getParamsAsync([{
+prompt.get([{
     name: 'commitFrequency',
     pattern: /^\d+$/,
     description: 'Frequency of commits to remote repository',
@@ -38,15 +33,25 @@ getParamsAsync([{
     description: 'Squash all commits into one',
     required: true,
     default: true
-}]).then(result =>
-    writeFileAsync(settingsPath, JSON.stringify(result))
-).then(() => {
+}, {
+    name: 'smartMode',
+    pattern: /^(yes|no|y|n|true|false)$/,
+    description: 'Smart select when to commit',
+    required: true,
+    default: true
+}], (error, data) => {
+    if (error) {
+        console.log(error);
+        process.exit(1);
+    }
+
+    fs.writeFileSync(settingsPath, JSON.stringify(data));
     console.info('Settings applied');
-    ifArbitratorStarted(() => {
+    utils.ifArbitratorStarted(() => {
         console.log('Restarting arbitrator...');
-        exec(`forever -m 1 restart ${arbitrationPath}`);
+        cp.execSync(`forever -m 1 restart ${arbitrationPath}`);
     }, () => {
         console.log('Running arbitrator...');
-        exec(`forever -m 1 start ${arbitrationPath}`);
+        cp.execSync(`forever -m 1 start ${arbitrationPath}`);
     });
-}).catch(() => process.exit(1));
+});

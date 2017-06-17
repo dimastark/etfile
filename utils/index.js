@@ -50,7 +50,7 @@ function ifGitClientNotStarted(cb, endCb) {
 function exitIfArbitratorNotStarted(endCb) {
     ifArbitratorNotStarted(() => {
         console.error('Arbitrator not started');
-        console.info('Please run settings-wizard');
+        console.info('Please run setup-wizard');
         process.exit();
     }, endCb);
 }
