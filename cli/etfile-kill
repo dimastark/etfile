@@ -16,7 +16,7 @@ if (program.args.length === 0) {
 checks.exitIfArbitratorNotStarted();
 
 const requester = new cote.Requester(
-    { name: 'Kill requester' },
+    { name: 'Kill requester', key: 'arbitration' },
     { log: false }
 );
 

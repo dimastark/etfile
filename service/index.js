@@ -3,8 +3,9 @@
 const cote = require('cote');
 
 class Service {
-    constructor(name) {
+    constructor(name, options = {}) {
         this.name = name;
+        this.options = options;
     }
 
     _get(part) {
@@ -12,12 +13,13 @@ class Service {
 
         if (!this[prop]) {
             const name = `${this.name} ${part}`;
+            const opts = Object.assign({name}, this.options[part]);
             this[prop] = new {
                 subscriber: cote.Subscriber,
                 publisher: cote.Publisher,
                 requester: cote.Requester,
                 responder: cote.Responder
-            }[part]({name});
+            }[part](opts);
         }
 
         return this[prop];

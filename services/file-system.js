@@ -5,7 +5,10 @@ const chokidar = require('chokidar');
 
 const Service = require('../service');
 
-const fsService = new Service('file system events proxy');
+const fsService = new Service('file system events proxy', {
+    requester: {key: 'arbitration'},
+    subscriber: {key: 'conversation'}
+});
 
 const path = process.argv[2];
 const repo = process.argv[3];

@@ -6,7 +6,11 @@ const faker = require('faker');
 
 const Service = require('../service');
 
-const arbitrationService = new Service('arbitrator');
+const arbitrationService = new Service('arbitrator', {
+    responder: {key: 'arbitration'},
+    publisher: {key: 'conversation'},
+    requester: {key: 'telling'}
+});
 const settings = readSettings();
 const fsServices = {};
 

@@ -10,7 +10,7 @@ const checks = require('../utils/checks');
 checks.exitIfArbitratorNotStarted();
 
 const requester = new cote.Requester(
-    { name: 'List requester' },
+    { name: 'List requester', key: 'arbitration' },
     { log: false }
 );
 

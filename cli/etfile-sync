@@ -16,7 +16,7 @@ if (program.args.length === 0) {
 checks.exitIfArbitratorNotStarted();
 
 const requester = new cote.Requester(
-    { name: 'Sync requester' },
+    { name: 'Sync requester', key: 'arbitration' },
     { log: false }
 );
 
