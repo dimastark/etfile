@@ -41,11 +41,11 @@ function ifArbitratorNotStarted(cb, endCb) {
 }
 
 function ifGitClientStarted(cb, endCb) {
-    ifPortInUse(7000, cb, endCb);
+    ifPortInUse(8001, cb, endCb);
 }
 
 function ifGitClientNotStarted(cb, endCb) {
-    ifPortNotInUse(7000, cb, endCb);
+    ifPortNotInUse(8001, cb, endCb);
 }
 
 function exitIfArbitratorNotStarted(endCb) {

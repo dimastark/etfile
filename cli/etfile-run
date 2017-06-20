@@ -30,9 +30,9 @@ if (!program['remote']) {
 
 const repository = program['remote'];
 const name = gitUtils.getNameFromGitUrl(repository);
-const watchPath = path.isAbsolute(paths[0])
-    ? path.join(paths[0], name)
-    : path.join(process.cwd(), paths[0], name);
+let watchPath = path.isAbsolute(paths[0])
+    ? path.join(paths[0])
+    : path.join(process.cwd(), paths[0]);
 
 async.series([
     fs.stat.bind(null, settingsFile),
@@ -53,7 +53,8 @@ async.series([
     }, cb),
     cb => {
         console.info('Cloning repository...');
-        git(path).clone(repository, watchPath);
+        git(watchPath).clone(repository, name);
+        watchPath = path.join(watchPath, name);
         cb();
     },
     cb => {
@@ -72,6 +73,7 @@ async.series([
         console.error('File with settings not exists');
         console.error('Please run setup wizard');
     } else if (error.code === 'ENOENT' && error.path === watchPath) {
+        console.log(watchPath);
         console.error('Bad directory path (not exists)')
     } else {
         console.error('Something goes wrong');
