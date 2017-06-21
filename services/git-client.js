@@ -1,17 +1,25 @@
 'use strict';
 
+const git = require('simple-git');
 const Service = require('../service');
-const readSettings = require('../utils/settings');
+const gitPull = require('../utils/git').gitPull;
 
 const gitClientService = new Service('git client', {
     responder: {key: 'telling'}
 });
-const settings = readSettings();
 
 gitClientService.responder.on('git add', (req, cb) => {
-
+    cb('ok');
+    git(req.path).add('.');
 });
 
 gitClientService.responder.on('git commit', (req, cb) => {
+    cb('ok');
+    git(req.path).commit(`Change ${req.file}`);
+});
 
+gitClientService.responder.on('git push', (req, cb) => {
+    cb('ok');
+    gitPull(req.path);
+    git(req.path).push();
 });
