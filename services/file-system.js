@@ -1,9 +1,9 @@
 'use strict';
 
-const git = require('simple-git');
 const chokidar = require('chokidar');
 
 const Service = require('../service');
+const gitPull = require('../utils/git').gitPull;
 
 const fsService = new Service('file system events proxy', {
     requester: {key: 'arbitration'},
@@ -29,8 +29,7 @@ fsService.requester.send({ type: 'give me name', path, repo }, req => {
         if (req.method === 'die') {
             process.exit(0);
         }
-        if (req.method === 'syn') {
-            git(path).pull();
-        }
     });
 });
+
+setInterval(gitPull.bind(path), 10000);

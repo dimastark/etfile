@@ -5,6 +5,7 @@ const path = require('path');
 const faker = require('faker');
 
 const Service = require('../service');
+const readSettings = require('../utils/settings');
 
 const arbitrationService = new Service('arbitrator', {
     responder: {key: 'arbitration'},
@@ -59,14 +60,4 @@ function nextName() {
     }
 
     return name;
-}
-
-function readSettings() {
-    const settingsPath = path.join(__dirname, 'settings.json');
-    try {
-        return JSON.parse(fs.readFileSync(settingsPath));
-    } catch (err) {
-        console.error('Settings file not exists');
-        process.exit(1);
-    }
 }
