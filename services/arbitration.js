@@ -39,15 +39,6 @@ arbitrationService.responder.on('kill please', (req, cb) => {
     }
 });
 
-arbitrationService.responder.on('sync please', (req, cb) => {
-    if (fsServices.hasOwnProperty(req.name)) {
-        arbitrationService.publisher.publish(req.name, {method: 'syn'});
-        cb('ok');
-    } else {
-        cb('not started')
-    }
-});
-
 arbitrationService.responder.on('fs event', (req, cb) => {
     cb('ok');
     console.log(req);
