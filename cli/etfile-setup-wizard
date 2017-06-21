@@ -20,7 +20,7 @@ prompt.start();
 prompt.get([{
     name: 'commitFrequency',
     pattern: /^\d+$/,
-    description: 'Frequency of commits to remote repository',
+    description: 'Frequency of commits to repository',
     required: true,
     default: 1
 }, {
