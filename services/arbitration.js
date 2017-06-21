@@ -41,6 +41,12 @@ arbitrationService.responder.on('kill please', (req, cb) => {
 
 arbitrationService.responder.on('fs event', (req, cb) => {
     cb('ok');
+    if (req.event === 'add' || req.event === 'addDir') {
+        arbitrationService.requester.send({
+            type: 'git add',
+            path: fsServices[req.name].path
+        });
+    }
     console.log(req);
 });
 

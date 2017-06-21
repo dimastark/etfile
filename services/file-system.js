@@ -21,8 +21,8 @@ if (!path || !repo) {
 fsService.requester.send({ type: 'give me name', path, repo }, req => {
     const name = req.name;
 
-    chokidar.watch(path).on('all', (event, path) => {
-        fsService.requester.send({ type:'fs event', name, path, event });
+    chokidar.watch(path).on('all', event => {
+        fsService.requester.send({ type:'fs event', name, event });
     });
 
     fsService.subscriber.on(name, req => {
