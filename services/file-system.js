@@ -3,7 +3,6 @@
 const chokidar = require('chokidar');
 
 const Service = require('../service');
-const gitPull = require('../utils/git').gitPull;
 
 const fsService = new Service('file system events proxy', {
     requester: {key: 'arbitration'},
@@ -22,7 +21,7 @@ fsService.requester.send({ type: 'give me name', path, repo }, req => {
     const name = req.name;
 
     chokidar.watch(path).on('all', (event, path) => {
-        fsService.requester.send({ type:'fs event', name, path, event });
+        fsService.requester.send({ type:'fs event', name, path, event, repo });
     });
 
     fsService.subscriber.on(name, req => {
@@ -31,5 +30,3 @@ fsService.requester.send({ type: 'give me name', path, repo }, req => {
         }
     });
 });
-
-setInterval(gitPull.bind(path), 10000);

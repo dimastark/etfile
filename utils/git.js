@@ -15,7 +15,7 @@ function getNameFromGitUrl(url) {
 
 function gitPull(path) {
     git(path).pull('origin', 'master', {
-        '-s': 'recursive', '-X': 'ours'
+        '-s recursive': null, '-X ours': null
     });
 }
 

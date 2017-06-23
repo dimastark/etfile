@@ -47,7 +47,7 @@ arbitrationService.responder.on('fs event', (req, cb) => {
         arbitrationService.requester.send({
             type: 'git add',
             path: fsServices[req.name].path
-        });
+        }, () => {});
     } else {
         handleEvent(req);
     }
@@ -63,6 +63,14 @@ function nextName() {
 }
 
 function handleEvent(event) {
+    if (event.path.includes('.git')) {
+        return;
+    }
+
+    if (!fsServices.hasOwnProperty(event.name)) {
+        fsServices[event.name] = { path: event.path, repo: event.repo, params: {} };
+    }
+
     const commitsObj = commits[event.name];
     const fsServiceObj = fsServices[event.name];
 
@@ -75,14 +83,14 @@ function handleEvent(event) {
         arbitrationService.requester.send({
             type: 'git commit',
             path: fsServiceObj.path
-        });
+        }, () => {});
     }
 
     if (isSmartMode && !isPathEqual || !isSmartMode && needPush) {
         arbitrationService.requester.send({
             type: 'git push',
             path: fsServiceObj.path
-        });
+        }, () => {});
     }
 
     commitsObj.count += 1;
