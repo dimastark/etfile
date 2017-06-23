@@ -15,7 +15,11 @@ function getNameFromGitUrl(url) {
 }
 
 function add(path_) {
-    cp.execSync(`git -C "${path_}" add .`);
+    try {
+        cp.execSync(`git -C "${path_}" add .`);
+    } catch (err) {
+        console.log('Errors');
+    }
 }
 
 function commit(path_, message) {
@@ -39,7 +43,11 @@ function pull(path_) {
 }
 
 function push(path_) {
-    cp.execSync(`git -C "${path_}" push`);
+    try {
+        cp.execSync(`git -C "${path_}" push`);
+    } catch (err) {
+        console.log('Errors');
+    }
 }
 
 module.exports = {
