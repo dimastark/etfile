@@ -43,14 +43,7 @@ arbitrationService.responder.on('kill please', (req, cb) => {
 
 arbitrationService.responder.on('fs event', (req, cb) => {
     cb('ok');
-    if (req.event === 'add' || req.event === 'addDir') {
-        arbitrationService.requester.send({
-            type: 'git add',
-            path: fsServices[req.name].path
-        }, () => {});
-    } else {
-        handleEvent(req);
-    }
+    handleEvent(req);
 });
 
 function nextName() {
@@ -71,6 +64,14 @@ function handleEvent(event) {
         fsServices[event.name] = { path: event.path, repo: event.repo, params: {} };
     }
 
+    if (event.event === 'add' || event.event === 'addDir') {
+        arbitrationService.requester.send({
+            type: 'git add',
+            path: fsServices[event.name].path
+        }, () => {});
+        return;
+    }
+
     const commitsObj = commits[event.name];
     const fsServiceObj = fsServices[event.name];
 
@@ -79,7 +80,7 @@ function handleEvent(event) {
     const needCommit = commitsObj.count % settings.commitFrequency === 0;
     const needPush = commitsObj.count % settings.pushFrequency === 0;
 
-    if (isSmartMode && isPathEqual || !isSmartMode && needCommit) {
+    if (isSmartMode || !isSmartMode && needCommit || needPush) {
         arbitrationService.requester.send({
             type: 'git commit',
             path: fsServiceObj.path

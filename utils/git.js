@@ -1,5 +1,7 @@
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
 const cp = require('child_process');
 
 function repositoryExists(repoUrl, cb) {
@@ -12,20 +14,32 @@ function getNameFromGitUrl(url) {
     return gitNameReg.exec(url)[1];
 }
 
-function add(path) {
-    cp.execSync(`git -C "${path}" add .`);
+function add(path_) {
+    cp.execSync(`git -C "${path_}" add .`);
 }
 
-function commit(path, message) {
-    cp.execSync(`git -C "${path}" commit . -m ${message}`);
+function commit(path_, message) {
+    try {
+        cp.execSync(`git -C "${path_}" commit . -m ${message}`);
+    } catch (err) {
+        console.log('Nothing to commit.');
+    }
 }
 
-function pull(path) {
-    cp.execSync(`git -C "${path}" pull -s recursive -X ours`);
+function pull(path_) {
+    try {
+        fs.statSync(path.join(path_, '.git/index.lock'));
+    } catch (err) {
+        try {
+            cp.execSync(`git -C "${path_}" pull -s recursive -X ours`);
+        } catch (error) {
+            console.log('Git already running.');
+        }
+    }
 }
 
-function push(path) {
-    cp.execSync(`git -C "${path}" push`);
+function push(path_) {
+    cp.execSync(`git -C "${path_}" push`);
 }
 
 module.exports = {
